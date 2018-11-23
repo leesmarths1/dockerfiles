@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: oracledb1
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: oracledb1
+    spec:
+        containers:
+            - name: oracledb1
+              image: eu.gcr.io/leafy-envelope-212213/oracledb
+              ports:
+                - containerPort: 1521
+                - containerPort: 5500
+              volumeMounts:
+                - name: oracledb1-store
+                  mountPath: /ORCL
+                  subPath: oracledb1-store
+        volumes:
+            - name: oracledb1-store
+              persistentVolumeClaim:
+                claimName: oracledb1-store
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracledb1-service
+  labels:
+    name: oracledb1-service
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: 1521-to-1521-tcp
+    nodePort: 32447
+    port: 1521
+    protocol: TCP
+    targetPort: 1521
+  - name: 5500-to-5500-tcp
+    nodePort: 31308
+    port: 5500
+    protocol: TCP
+    targetPort: 5500
+  selector:
+    app: oracledb1
+  sessionAffinity: None
+  type: LoadBalancer
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oracledb1-service
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: default
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 10Gi

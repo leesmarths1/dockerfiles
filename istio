@@ -1,0 +1,9 @@
+gcloud container clusters create istio-1 --cluster-version=1.10.5-gke.4  --zone europe-west1-b --project hs-it-pega-sandbox
+
+gcloud container clusters get-credentials <cluster-name> \
+--zone europe-west1-b \
+--project hs-it-pega-sandbox
+
+kubectl create clusterrolebinding cluster-admin-binding \
+--clusterrole=cluster-admin \
+--user=$(gcloud config get-value core/account)

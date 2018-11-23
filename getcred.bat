@@ -1,0 +1,1 @@
+gcloud container clusters get-credentials development-1 --zone europe-west1-b --project leafy-envelope-212213

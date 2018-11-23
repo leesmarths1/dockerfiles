@@ -1,0 +1,1 @@
+kubectl run dev-1 --image=eu.gcr.io/astute-task-210900/weblogic1 --port 8080
